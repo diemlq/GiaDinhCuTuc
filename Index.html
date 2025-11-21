@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Phả hệ dạng trên–xuống</title>
+<script src="https://balkan.app/js/OrgChart.js"></script>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+
+  #tree {
+    width: 100%;
+    height: 100%;
+  }
+
+  .node-text {
+    width: 230px;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.1;
+  }
+
+  .index { font-size: 13px; color: #e60000; }
+  .name { font-size: 15px; font-weight: normal; color: #fceb07; }
+  .vc { font-size: 14px; color: #ffffff; }
+
+  #popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fefefe;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: none;
+    z-index: 9999;
+    width: 300px;
+  }
+
+  #popup h3 { margin-top: 0; text-align: center; }
+  #popup input {
+    width: 100%;
+    padding: 6px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  #popup button {
+    margin: 5px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  #popup .save { background: #4CAF50; color: white; }
+  #popup .add-child { background: #2196F3; color: white; }
+  #popup .delete { background: #f44336; color: white; }
+  #popup .cancel { background: #aaa; color: white; }
+
+  #saveAll {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 8px 12px;
+    background: #009688;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 1000;
+  }
+</style>
+</head>
+<body>
+<div id="tree"></div>
+<script>
+var nodes = [
+  {
+    "id": 1,
+    "index": "Đời thứ 1",
+    "name": "Lưu Chương Huy",
+    "VC": "Vợ: Nguyễn Thị ..."
+  },
+  {
+    "id": 2,
+    "pid": 1,
+    "index": "Đời thứ 2",
+    "name": "Lưu Chương Tục: 19xx - 19xx",
+    "VC": "Nguyễn Thị Ngân: 19xx - 19xx"
+  },
+  {
+    "id": 3,
+    "pid": 2,
+    "index": "Đời thứ 3",
+    "name": "Lưu Chương Thuân: 19xx - 19xx",
+    "VC": "Nguyễn Thị Víu: 19xx"
+  },
+  {
+    "id": 4,
+    "pid": 2,
+    "index": "Đời thứ 3",
+    "name": "Lưu Chương Thuấn: 19xx - 19xx",
+    "VC": "Nguyễn Thị Hến 19xx"
+  },
+  {
+    "id": 5,
+    "pid": 2,
+    "index": "Đời thứ 3",
+    "name": "Lưu Chương Phương: 19xx-20xx",
+    "VC": "Nguyễn Thị Thái: 19xx"
+  },
+  {
+    "id": 6,
+    "pid": 2,
+    "index": "Đời thứ 3",
+    "name": "Lưu Chương Cáp: 1940",
+    "VC": "Nguyễn Thị Mai: 19xx"
+  },
+  {
+    "id": 7,
+    "pid": 3,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Hoan: 19xx - 19xx",
+    "VC": "Vợ: ........"
+  },
+  {
+    "id": 8,
+    "pid": 3,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Thanh: 19xx",
+    "VC": "Vợ: ......."
+  },
+  {
+    "id": 9,
+    "pid": 3,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Tuấn: 19xx - 19xx",
+    "VC": "Vợ: ....."
+  },
+  {
+    "id": 10,
+    "pid": 3,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Lâm: 1964 - 2025",
+    "VC": "Nguyễn Thị Hảo: 19xx"
+  },
+  {
+    "id": 11,
+    "pid": 3,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Phong: 1966",
+    "VC": "Vợ: ....."
+  },
+  {
+    "id": 33,
+    "pid": 11,
+    "index": "Đời thứ 5",
+    "name": "Lưu Chương ..... 19xx",
+    "VC": ""
+  },
+  {
+    "id": 36,
+    "pid": 11,
+    "index": "Đời thứ 5",
+    "name": "Lưu Chương .....: 19xx",
+    "VC": "Nguyễn Trọng Thuận: 1982"
+  },
+  {
+    "id": 19,
+    "pid": 4,
+    "index": "Đời thứ 4",
+    "name": "Lưu Thị Thủy : 1963",
+    "VC": "...... Dũng: 1954"
+  },
+  {
+    "id": 20,
+    "pid": 19,
+    "index": "Đời thứ 5",
+    "name": "Nguyễn Thị .....",
+    "VC": ""
+  },
+  {
+    "id": 23,
+    "pid": 19,
+    "index": "Đời thứ 5",
+    "name": "Nguyễn Văn .....",
+    "VC": ""
+  },
+  {
+    "id": 26,
+    "pid": 4,
+    "index": "Đời thứ 4",
+    "name": "Lưu Thị Hương: 19xx",
+    "VC": ".... Nhận: 19xx"
+  },
+  {
+    "id": 27,
+    "pid": 26,
+    "index": "Đời thứ 5",
+    "name": "Nguyễn Thị .....",
+    "VC": ""
+  },
+  {
+    "id": 30,
+    "pid": 4,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Bình : 1974",
+    "VC": "Nguyễn Thị ......: 19xx"
+  },
+  {
+    "id": 31,
+    "pid": 30,
+    "index": "Đời thứ 5",
+    "name": "Lưu Thị ...... : 19xx",
+    "VC": ""
+  },
+  {
+    "id": 32,
+    "pid": 30,
+    "index": "Đời thứ 5",
+    "name": "Lưu Chương ..... : 19xx",
+    "VC": ""
+  },
+  {
+    "id": 40,
+    "pid": 7,
+    "index": "Đời thứ 5",
+    "name": "Lưu Thị ...... : 19xx",
+    "VC": ""
+  },
+  {
+    "id": 41,
+    "pid": 8,
+    "index": "Đời thứ 5",
+    "name": "Lưu Chương .... :19xx",
+    "VC": ""
+  },
+  {
+    "id": 42,
+    "pid": 8,
+    "index": "Đời thứ 5",
+    "name": "Lưu Chương ..... : 19xx",
+    "VC": ""
+  },
+  {
+    "id": 43,
+    "pid": 9,
+    "index": "Đời thứ 5",
+    "name": "Lưu Chương ..... : 19xx",
+    "VC": ""
+  },
+  {
+    "id": 44,
+    "pid": 9,
+    "index": "Đời thứ 5",
+    "name": "Lưu Chương ..... : 19xx",
+    "VC": ""
+  },
+  {
+    "id": 45,
+    "pid": 10,
+    "index": "Đời thứ 5",
+    "name": "Lưu Thị ..... : 19xx",
+    "VC": "Chồng: ......."
+  },
+  {
+    "id": 46,
+    "pid": 10,
+    "index": "Đời thứ 5",
+    "name": "Lưu Thị..... : 19xx",
+    "VC": ""
+  },
+  {
+    "id": 47,
+    "pid": 10,
+    "index": "Đời thứ 5",
+    "name": "Lưu Chương ..... : 19xx",
+    "VC": ""
+  },
+  {
+    "id": 48,
+    "pid": 26,
+    "index": "Đời thứ 5",
+    "name": "Nguyễn Thị .....",
+    "VC": ""
+  },
+  {
+    "id": 49,
+    "pid": 26,
+    "index": "Đời thứ 5",
+    "name": "Nguyễn Văn ....",
+    "VC": ""
+  },
+  {
+    "id": 50,
+    "pid": 3,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Khanh : 1969",
+    "VC": ""
+  },
+  {
+    "id": 51,
+    "pid": 3,
+    "index": "Đời thứ 4",
+    "name": "Lưu Thị Hằng ..... : 19xx",
+    "VC": "Chồng: ......"
+  },
+  {
+    "id": 52,
+    "pid": 5,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chấn Hưng: 1962",
+    "VC": "Nguyễn Thị .... : 19xx"
+  },
+  {
+    "id": 53,
+    "pid": 5,
+    "index": "Đời thứ 4",
+    "name": "Lưu Trường Giang : 1974",
+    "VC": "Nguyễn Thị ....: 19xx"
+  },
+  {
+    "id": 54,
+    "pid": 52,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 55,
+    "pid": 52,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 56,
+    "pid": 53,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 57,
+    "pid": 53,
+    "index": "Đời thứ 6",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 58,
+    "pid": 6,
+    "index": "Đời thứ 4",
+    "name": "Lưu Mai Hương: 1967",
+    "VC": "Chồng: ....."
+  },
+  {
+    "id": 59,
+    "pid": 6,
+    "index": "Đời thứ 4",
+    "name": "Lưu Mai Anh: 19xx",
+    "VC": "Chồng: ............"
+  },
+  {
+    "id": 60,
+    "pid": 6,
+    "index": "Đời thứ 4",
+    "name": "Lưu Mai Lan : 19xx",
+    "VC": "Chồng: ....."
+  },
+  {
+    "id": 61,
+    "pid": 58,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 62,
+    "pid": 58,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 63,
+    "pid": 59,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 64,
+    "pid": 59,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 65,
+    "pid": 60,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 66,
+    "pid": 60,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 67,
+    "pid": 2,
+    "index": "Đời thứ 3",
+    "name": "Lưu Thị Lợi: 19xx - 20xx",
+    "VC": "Đỗ Nguyễn Bá: 19xx -20xx"
+  },
+  {
+    "id": 68,
+    "pid": 67,
+    "index": "Đời thứ 4",
+    "name": "Đỗ Khánh Quỳnh: 1973",
+    "VC": "Cường: 1963"
+  },
+  {
+    "id": 69,
+    "pid": 67,
+    "index": "Đời thứ 4",
+    "name": "Đỗ Nam Khánh: 1975",
+    "VC": "Nguyễn Kim Anh: 19xx"
+  },
+  {
+    "id": 70,
+    "pid": 68,
+    "index": "Đời thứ 5",
+    "name": "Thị Cún: 19xx",
+    "VC": ""
+  },
+  {
+    "id": 71,
+    "pid": 68,
+    "index": "Đời thứ 5",
+    "name": "Thị Mi: 19xx",
+    "VC": ""
+  },
+  {
+    "id": 72,
+    "pid": 69,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 73,
+    "pid": 69,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 74,
+    "pid": 2,
+    "index": "Đời thứ 3",
+    "name": "Lưu Chương Đoàn: 19xx - 19xx",
+    "VC": "........... Hà: 19xx"
+  },
+  {
+    "id": 75,
+    "pid": 2,
+    "index": "Đời thứ 3",
+    "name": "Lưu Chương Tụ",
+    "VC": "...... Nhâm: 19xx"
+  },
+  {
+    "id": 76,
+    "pid": 2,
+    "index": "Đời thứ 3",
+    "name": "Lư Thị Hảo: 19xx",
+    "VC": "Nguyễn Duy Xuyên: 19xx"
+  },
+  {
+    "id": 77,
+    "pid": 2,
+    "index": "Đời thứ 3",
+    "name": "Lưu Thị Tâm: 19xx",
+    "VC": ".... ..... Ngoạn: 19xx"
+  },
+  {
+    "id": 78,
+    "pid": 74,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Hùng: 1975",
+    "VC": "Vơ: ?"
+  },
+  {
+    "id": 79,
+    "pid": 74,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Cường: 19xx",
+    "VC": ""
+  },
+  {
+    "id": 80,
+    "pid": 78,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 81,
+    "pid": 78,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 82,
+    "pid": 75,
+    "index": "Đời thứ 4",
+    "name": "Lưu Chương Thịnh",
+    "VC": "Vợ: ..."
+  },
+  {
+    "id": 83,
+    "pid": 75,
+    "index": "Đời thứ 4",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 84,
+    "pid": 82,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 85,
+    "pid": 82,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 86,
+    "pid": 76,
+    "index": "Đời thứ 4",
+    "name": "Nguyễn Thị Nga",
+    "VC": "Chồng: ?"
+  },
+  {
+    "id": 87,
+    "pid": 76,
+    "index": "Đời thứ 4",
+    "name": "Nguyễ Duy Dũng: 19xx",
+    "VC": "Vợ:"
+  },
+  {
+    "id": 88,
+    "pid": 76,
+    "index": "Đời thứ 4",
+    "name": "Nguyễn Duy Tùng",
+    "VC": "Vợ: "
+  },
+  {
+    "id": 89,
+    "pid": 86,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 90,
+    "pid": 86,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 91,
+    "pid": 87,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 92,
+    "pid": 87,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 93,
+    "pid": 88,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 94,
+    "pid": 88,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 95,
+    "pid": 77,
+    "index": "Đời thứ 4",
+    "name": "... ...... Thắng: 19xx",
+    "VC": "Vợ: 19xx"
+  },
+  {
+    "id": 96,
+    "pid": 77,
+    "index": "Đời thứ 4",
+    "name": "..... .... Trang: 19xx",
+    "VC": "Chồng: ...."
+  },
+  {
+    "id": 97,
+    "pid": 95,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 98,
+    "pid": 95,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 99,
+    "pid": 96,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 100,
+    "pid": 96,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 101,
+    "pid": 51,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  },
+  {
+    "id": 102,
+    "pid": 51,
+    "index": "Đời thứ 5",
+    "name": "Người mới",
+    "VC": ""
+  }
+];
+
+OrgChart.templates.centerAlign = Object.assign({}, OrgChart.templates.ana);
+OrgChart.templates.centerAlign.size = [240, 70];
+OrgChart.templates.centerAlign.minus =
+  '<circle cx="15" cy="15" r="7" fill="#ffffff" stroke="#039BE5" stroke-width="1.2"></circle>' +
+  '<path d="M10.5,15 h9" stroke="#039BE5" stroke-width="1.6"></path>';
+OrgChart.templates.centerAlign.plus =
+  '<circle cx="15" cy="15" r="7" fill="#ffffff" stroke="#039BE5" stroke-width="1.2"></circle>' +
+  '<path d="M15,10.5 v9 M10.5,15 h9" stroke="#039BE5" stroke-width="1.6"></path>';
+OrgChart.templates.centerAlign.link =
+  '<path stroke="#808080" stroke-width="1" fill="none" d="{edge}" />';
+OrgChart.templates.centerAlign.field_0 =
+  '<foreignObject x="5" y="10" width="230" height="20"><div class="node-text index">{val}</div></foreignObject>';
+OrgChart.templates.centerAlign.field_1 =
+  '<foreignObject x="5" y="28" width="230" height="22"><div class="node-text name">{val}</div></foreignObject>';
+OrgChart.templates.centerAlign.field_2 =
+  '<foreignObject x="5" y="48" width="230" height="18"><div class="node-text vc">{val}</div></foreignObject>';
+
+var chart = new OrgChart(document.getElementById("tree"), {
+  template: "centerAlign",
+  enableSearch: true,
+  nodeMouseClick: OrgChart.action.expandCollapse,
+  collapse: { level: 3 },
+  nodes: nodes,
+  nodeBinding: { field_0: "index", field_1: "name", field_2: "VC" }
+});
+</script>
+</body>
+</html>
