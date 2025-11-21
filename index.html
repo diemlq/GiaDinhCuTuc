@@ -108,8 +108,8 @@ var nodes = [
     "id": 4,
     "pid": 2,
     "index": "Đời thứ 3",
-    "name": "Lưu Chương Thuấn: 19xx - 19xx",
-    "VC": "Nguyễn Thị Hến 19xx"
+    "name": "Lưu Chương Thuấn: 1933 - 1978",
+    "VC": "Nguyễn Thị Hến 1933"
   },
   {
     "id": 5,
@@ -213,21 +213,21 @@ var nodes = [
     "id": 30,
     "pid": 4,
     "index": "Đời thứ 4",
-    "name": "Lưu Chương Bình : 1974",
-    "VC": "Nguyễn Thị ......: 19xx"
+    "name": "Lưu Thanh Bình : 1972",
+    "VC": "Nguyễn thu Hằng: 1986"
   },
   {
     "id": 31,
     "pid": 30,
     "index": "Đời thứ 5",
-    "name": "Lưu Thị ...... : 19xx",
+    "name": "Lưu An Phú: 2008",
     "VC": ""
   },
   {
     "id": 32,
     "pid": 30,
     "index": "Đời thứ 5",
-    "name": "Lưu Chương ..... : 19xx",
+    "name": "Lưu Châu Giang: 2012",
     "VC": ""
   },
   {
@@ -694,7 +694,7 @@ var chart = new OrgChart(document.getElementById("tree"), {
   template: "centerAlign",
   enableSearch: true,
   nodeMouseClick: OrgChart.action.expandCollapse,
-  collapse: { level: 3 },
+  collapse: { level: 5 },
   nodes: nodes,
   nodeBinding: { field_0: "index", field_1: "name", field_2: "VC" }
 });
