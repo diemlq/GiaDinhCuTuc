@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Phả hệ dạng trên–xuống</title>
+<title>Con cháu cụ Tục</title>
 <script src="https://balkan.app/js/OrgChart.js"></script>
 <style>
   html, body {
@@ -27,7 +27,7 @@
   }
 
   .index { font-size: 13px; color: #e60000; }
-  .name { font-size: 15px; font-weight: normal; color: #fceb07; }
+  .name { font-size: 14px; font-weight: normal; color: #fceb07; }
   .vc { font-size: 14px; color: #ffffff; }
 
   #popup {
@@ -81,41 +81,70 @@
 </style>
 </head>
 <body>
+  <style>
+  /* Viền cam bao quanh toàn bộ trang web */
+  html {
+    box-sizing: border-box;
+    padding: 8px; /* khoảng cách từ viền đến nội dung */
+    background: #000; /* nền đen để viền cam hiện rõ hơn trên mọi thiết bị */
+    min-height: 100vh;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    border: 6px solid #ff6a00;     /* màu cam đậm đẹp */
+    /* Hoặc dùng các màu cam khác:
+       #ff9500 (cam sáng)
+       #ff5e00 (cam đỏ)
+       #ff7b00
+       #ffa500 (màu orange chuẩn)
+    */
+    border-radius: 12px; /* bo góc viền cho mềm mại */
+    overflow-x: hidden;
+    background: white; /* màu nền trang web thật sự */
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+<style>
+  .announcement-bar {font-family: 'Lobster', cursive; text-align: center; font-size: 32px; padding: 10px 0; color: #d14b00;}
+</style>
+<div class="announcement-bar"> 🔥 Con cháu gia đình cụ Lưu Chương Tục 🔥 </div>  
 <div id="tree"></div>
 <script>
 var nodes = [
   {
     "id": 1,
     "index": "Đời thứ 12",
-    "name": "Lưu Chương Vi: 18xx-19xx",
-    "VC": "Nguyễn Thị ...: 18xx-19xx"
+    "name": "Lưu Chương Vi: 1867 (giỗ 28/9)",
+    "VC": "Lê Thị Thiệp: 1886 (giỗ 22/4)"
   },
   {
     "id": 2,
     "pid": 1,
     "index": "Đời thứ 13",
-    "name": "Lưu Chương Tục: 1910 - 1975",
-    "VC": "Nguyễn Thị Ngân: 1915 - 2009"
+    "name": "Lưu Chương Tục: 1910 (giỗ 22/7)",
+    "VC": "Nguyễn Thị Ngân: 1915 (giỗ 1/10)"
   },
   {
     "id": 3,
     "pid": 2,
     "index": "Đời thứ 14",
-    "name": "Lưu Chương Thuân: 19xx - 19xx",
-    "VC": "Nguyễn Thị Víu: 19xx"
+    "name": "Lưu Chương Thuân 19xx (giỗ 16/9)",
+    "VC": "Nguyễn Thị Víu: 19xx (giỗ 23/6)"
   },
   {
     "id": 4,
     "pid": 2,
     "index": "Đời thứ 14",
-    "name": "Lưu Chương Thuấn: 1933 - 1978",
+    "name": "Lưu Chương Thuấn: 1933 (giỗ 9/4)",
     "VC": "Nguyễn Thị Hến: 1933"
   },
   {
     "id": 5,
     "pid": 2,
     "index": "Đời thứ 14",
-    "name": "Lưu Chương Phương: 1937-2019",
+    "name": "Lưu Chương Phương 1937 (giỗ 5/1)",
     "VC": "Phạm Thị Mão: 1939"
   },
   {
@@ -416,7 +445,7 @@ var nodes = [
     "id": 67,
     "pid": 2,
     "index": "Đời thứ 14",
-    "name": "Lưu Thị Lợi: 19xx - 20xx",
+    "name": "Lưu Thị Lợi: 19xx (giỗ 17/4)",
     "VC": "Đỗ Nguyễn Bá: 19xx -20xx"
   },
   {
@@ -465,14 +494,14 @@ var nodes = [
     "id": 74,
     "pid": 2,
     "index": "Đời thứ 14",
-    "name": "Lưu Chương Đoàn: 1946 - 20xx",
+    "name": "Lưu Chương Đoàn: 1946 (giỗ 19/6)",
     "VC": "Tô Thanh Hà: 1945"
   },
   {
     "id": 75,
     "pid": 2,
     "index": "Đời thứ 14",
-    "name": "Lưu Chương Tụ: 19xx-19xx",
+    "name": "Lưu Chương Tụ: 19xx (giỗ 25/12)",
     "VC": "...... Nhâm: 19xx"
   },
   {
@@ -480,7 +509,7 @@ var nodes = [
     "pid": 2,
     "index": "Đời thứ 14",
     "name": "Lưu Thị Hảo: 1953",
-    "VC": "Nguyễn Duy Xuyên: 1953"
+    "VC": "Nguyễn Duy Xuyên: 1953 (giỗ 29/2)"
   },
   {
     "id": 77,
